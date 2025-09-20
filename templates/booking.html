@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow">
+  <h2 class="text-xl font-semibold mb-2">Booking</h2>
+  <div class="text-sm text-gray-600 mb-4">Trip: {{ itinerary.destination }} • Dates: {{ trip['dates'] }}</div>
+  <form id="bookingForm" method="post" action="{{ url_for('book', trip_id=trip['id']) }}">
+    <div class="mb-3">
+      <label class="block text-sm">Name</label>
+      <input name="name" class="w-full mt-1 p-3 border rounded" required>
+    </div>
+    <div class="mb-3">
+      <label class="block text-sm">Email</label>
+      <input name="email" type="email" class="w-full mt-1 p-3 border rounded" required>
+    </div>
+    <div class="mb-3">
+      <label class="block text-sm">Payment Method</label>
+      <select name="payment_method" class="w-full mt-1 p-3 border rounded">
+        <option value="upi">UPI</option>
+        <option value="razorpay">Razorpay</option>
+        <option value="gpay">Google Pay</option>
+      </select>
+    </div>
+    <div class="flex gap-3">
+      <button type="submit" class="bg-yellow-400 px-4 py-2 rounded font-semibold">Create booking</button>
+      <a href="{{ url_for('view_itinerary', trip_id=trip['id']) }}" class="px-4 py-2 rounded border">Back</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

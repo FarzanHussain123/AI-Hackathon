@@ -1,0 +1,45 @@
+# ------------------------
+# Python
+# ------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environments
+venv/
+.env/
+ENV/
+env/
+.venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# ------------------------
+# Environment & Config
+# ------------------------
+
+# Local environment variables (real secrets)
+.env
+
+# Service account keys (Firebase + GCP)
+config/*.json
+
+# ------------------------
+# OS / Editor files
+# ------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ------------------------
+# Logs
+# ------------------------
+*.log
+logs/

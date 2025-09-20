@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AI Trip Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  </head>
+  <body class="bg-gray-50 min-h-screen text-gray-800">
+    <nav class="bg-white shadow-sm p-4">
+      <div class="max-w-3xl mx-auto flex items-center justify-between">
+        <div class="flex items-center">
+          <div class="rounded-full bg-yellow-400 w-10 h-10 flex items-center justify-center mr-3 font-bold">D</div>
+          <div>
+            <div class="text-lg font-semibold">Dora — AI Trip Planner</div>
+            <div class="text-xs text-gray-500">Demo prototype (GCP + Firebase)</div>
+          </div>
+        </div>
+        <div class="text-sm text-gray-600">Hackathon Demo</div>
+      </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto p-6">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="space-y-2">
+          {% for category, message in messages %}
+            <div class="p-3 rounded {{ 'bg-red-100 text-red-800' if category=='danger' else 'bg-green-100 text-green-800' }}">{{ message }}</div>
+          {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="text-center text-sm text-gray-500 p-6">
+      Built with Vertex AI + Google Maps + Firestore (mock payment)
+    </footer>
+  </body>
+</html>

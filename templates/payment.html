@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow">
+  <h2 class="text-xl font-semibold mb-2">Payment</h2>
+  <div class="mb-4 text-sm text-gray-600">
+    Booking ID: {{ booking.booking_id }} <br>
+    Trip: {{ booking.destination }} ({{ booking.dates }}) <br>
+    Amount: ₹{{ booking.amount }} <br>
+    Payment Method: {{ booking.payment_method|capitalize }}
+  </div>
+
+  <!-- Mock Razorpay Button -->
+  <button id="rzp-button" 
+          class="bg-yellow-400 text-black px-6 py-2 rounded shadow hover:bg-yellow-500">
+    Pay with Razorpay
+  </button>
+
+  <form id="hidden-pay-form" action="{{ url_for('pay') }}" method="post" style="display:none;">
+    <input type="hidden" name="booking_id" value="{{ booking.booking_id }}">
+    <input type="hidden" name="trip_id" value="{{ booking.trip_id }}">
+    <input type="hidden" name="amount" value="{{ booking.amount }}">
+    <input type="hidden" name="payment_method" value="{{ booking.payment_method }}">
+  </form>
+</div>
+
+<!-- Razorpay Mock Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById("rzp-button").onclick = function(e){
+    e.preventDefault();
+
+    // Normally, you'd create an order from backend & pass order_id
+    // For now, we mock it
+    var options = {
+        "key": "rzp_test_1234567890abcdef", // Mock test key
+        "amount": {{ booking.amount|int }} * 100, // Amount in paise
+        "currency": "INR",
+        "name": "AI Trip Planner",
+        "description": "Trip Booking Payment",
+        "image": "https://razorpay.com/favicon.png",
+        "handler": function (response){
+            // After successful payment → auto submit form
+            document.getElementById("hidden-pay-form").submit();
+        },
+        "prefill": {
+            "name": "{{ booking.name or 'Guest User' }}",
+            "email": "{{ booking.email or 'guest@example.com' }}",
+            "contact": "9999999999"
+        },
+        "theme": {
+            "color": "#FBBF24"
+        }
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+};
+</script>
+{% endblock %}
