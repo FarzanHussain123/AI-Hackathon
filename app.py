@@ -14,7 +14,7 @@ app.secret_key = os.getenv("SECRET_KEY", "devsecret")
 
 # Import utils
 from utils.firebase_client import save_trip_firestore, get_trip_firestore
-from utils.maps_client import init_maps, search_places
+from utils.maps_client import init_maps, search_places, search_hotels
 from utils.vertex_ai_client import init_vertex, call_vertex
 
 # Initialize Google APIs
@@ -25,7 +25,7 @@ REGION = os.getenv("REGION", "us-central1")
 VERTEX_MODEL = os.getenv("VERTEX_MODEL")
 
 init_maps(os.getenv("GOOGLE_MAPS_API_KEY"))
-init_vertex(project=PROJECT_ID, region=REGION, key_path=GCLOUD_KEY)
+init_vertex(project=PROJECT_ID, region=REGION)  # removed key_path
 
 
 # ---------- Helper ----------
@@ -54,7 +54,7 @@ You are an expert travel planner. Produce ONLY valid JSON (no extra text) with s
   ],
   "summary":"<short>",
   "estimated_total_cost": <number>,
-  "suggested_hotels":[{{"name":"", "price_per_night":0, "rating":0}}]
+  "suggested_hotels":[{{"name":"", "price_per_night":0, "rating":0, "address":""}}]
 }}
 
 User: destination={destination}, dates={dates}, budget={budget}, themes={themes}
@@ -91,8 +91,9 @@ def generate():
         flash("Please add destination and dates", "danger")
         return redirect(url_for("index"))
 
-    # Get POIs from Maps
+    # Get POIs and Hotels from Maps
     pois = search_places(destination, themes, limit=5)
+    hotels = search_hotels(destination, limit=5)
 
     # Build prompt & call Vertex AI
     prompt = build_prompt(destination, dates, budget, themes, places=pois)
@@ -108,6 +109,9 @@ def generate():
             obj = json.loads(raw[s:e])
         except Exception:
             obj = {"destination": destination, "dates": dates, "itinerary": []}
+
+    # 🔥 Override suggested_hotels with real data
+    obj["suggested_hotels"] = hotels
 
     # Save to Firestore
     trip_doc = {
