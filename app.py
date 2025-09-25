@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 # Load .env file
 load_dotenv()
 
+api_key = os.getenv("GOOGLE_MAPS_API_KEY")
+
 # Flask app
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "devsecret")
